@@ -1,0 +1,19 @@
+services:
+  site:
+    image: ${IMAGE:?IMAGE is required}
+    restart: unless-stopped
+    networks:
+      - hosting-web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=hosting-web"
+      - "traefik.http.routers.is373-${STAGE}.rule=Host(`${SITE_HOST}`)"
+      - "traefik.http.routers.is373-${STAGE}.entrypoints=websecure"
+      - "traefik.http.routers.is373-${STAGE}.tls=true"
+      - "traefik.http.routers.is373-${STAGE}.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.is373-${STAGE}.service=is373-${STAGE}"
+      - "traefik.http.services.is373-${STAGE}.loadbalancer.server.port=80"
+
+networks:
+  hosting-web:
+    external: true
